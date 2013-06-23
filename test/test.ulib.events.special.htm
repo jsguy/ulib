@@ -1,0 +1,118 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<link rel="stylesheet" href="lib/qunit/qunit.css" type="text/css" media="screen" />
+		<script src="lib/qunit/qunit.js"></script>
+		
+		<script src="../ulib.events.js"></script>
+		<script src="../../tagsole/tagsole.min.js"></script>
+	</head>
+<body>
+	
+	<h1 id="qunit-header">ulib.events - special use</h1>
+	<h2 id="qunit-banner"></h2>
+	<h2 id="qunit-userAgent"></h2>
+	<ol id="qunit-tests"></ol>
+	
+	<script src="../ulib.events.js"></script>
+	
+    <script>
+    	//	The code
+		var em = new ulib.EventsManager();
+		
+		em.addEventType({
+			type: 'Once',
+			once: true
+		});
+		
+		em.addEventType({
+			type: 'NonConsec',
+			nonconsec: true
+		});
+		
+		em.addEventType({
+			type: 'After',
+			after: 'Before'
+		});
+		
+		em.addEventType({
+			type: 'Defer',
+			defer: 'Deferred'
+		});
+		
+		em.addEventType({ type: 'Before' });
+		
+		em.on('Once', function(o) {
+			tagsole.log('Once ran ' + o);
+		});
+		
+		em.trigger('Once', 1);
+		em.trigger('Once', 2);
+		
+		em.on('NonConsec', function(o) {
+			tagsole.log('NonConsec ran ' + o);
+		});
+		
+		em.trigger('NonConsec', 1);
+		em.trigger('NonConsec', 2);
+		em.trigger('Once', 3);
+		em.trigger('Dummy');
+		em.trigger('NonConsec', 3);
+		em.trigger('NonConsec', 4);
+		
+		em.on('After', function(o) {
+			tagsole.log('After ran ' + o);
+		});
+		
+		em.trigger('After', 1);
+		em.trigger('Before', 1);
+		em.trigger('After', 2);
+		
+		em.on('Deferred', function(o) {
+			tagsole.log('Deferred ran ' + o);
+		});
+		
+		em.on('Defer', function(o) {
+			tagsole.log('Defer ran ' + o);
+		});
+		
+		em.trigger('Defer', 1);
+		em.trigger('Deferred', 1);
+    </script>
+    
+    <script>
+    	// The tests
+    	
+    	//	Get all events logged and the length
+    	var ev = tagsole.get(),
+    		len = tagsole.get().length;
+    	
+		test( "Total number of events", function() {
+			expect(1);
+			ok( len === 6, "Ensure we have the right amount of triggered events" );
+		} );
+    	
+		test( "Run once only", function() {
+			expect(1);
+			ok( ev[0].args[0] === "Once ran 1", "Ensure that the 'once' parameter works" );
+		} );
+    	
+		test( "Run non-consecutively", function() {
+			expect(1);
+			ok( ev[1].args[0] === "NonConsec ran 1" && ev[2].args[0] === "NonConsec ran 3", "Ensure that the 'nonconsec' parameter works" );
+		} );
+    	
+		test( "Run after", function() {
+			expect(1);
+			ok( ev[3].args[0] === "After ran 2", "Ensure that the 'after' parameter works" );
+		} );
+    	
+		test( "Run defer", function() {
+			expect(1);
+			ok( ev[4].args[0] === "Deferred ran 1" && ev[5].args[0] === "Defer ran 1", "Ensure that the 'defer' parameter works" );
+		} );
+    	
+    </script>
+    
+</body>
+</html>

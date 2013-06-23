@@ -1,0 +1,343 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<link rel="stylesheet" href="lib/qunit/qunit.css" type="text/css" media="screen" />
+		<script src="lib/qunit/qunit.js"></script>
+
+		<script src="lib/jquery-1.8.2.js"></script>
+		<script src="lib/jquery.tmpl.js"></script>
+
+		<script src="../ulib.pubsub.js"></script>
+		<script src="../ulib.plugin.js"></script>
+		<script src="../../sole/sole.js"></script>
+	</head>
+<body>
+
+	<h1>Introduction to the ulib plugin manager</h1>
+
+	<p>
+		Before we get onto the plugin manager, I just want to quickly introduce: ulib, (or "micro library"), is a basic set of utilities and functionality for building small and optimal web application frameworks, libraries and other utilities. I started writing this library in early 2009, due to the lack of tiny libraries for creating <i>other</i> utilities and libraries. Yes, <i>now</i> there are <a href="http://microjs.com">numerous</a> tiny libraries available, that you can cherry pick, (and hope they will work well together), and of course many small "app-building" libraries as well, but there is still much merit in this ever-evolving micro library.
+		ulib has various features built in that most if the other libraries do, (ajax, jsonp, css loading, cookies, dom ready, templating, extend, each, etc...), however today I'd like to talk about a more specific feature that I think you might like: the plugin managers.
+	</p>
+
+	<h2>Uh, hang on, what exactly is a plugin?</h2>
+
+	<p>
+		A plugin is a bit of code that enhances base functionality of an application or library. Most decent javascript frameworks or application libraries provide functionality to achieve this in one way or another. Most libraries have this functionality built into the core of their solution, which means it is <a href="http://en.wikipedia.org/wiki/Coupling_(computer_programming)#Object-oriented_programming">tightly coupled</a>, which can potentially lead to <a href="http://en.wikipedia.org/wiki/Coupling_(computer_programming)#Disadvantages">complications</a>. In our case, ulib provides a small, loosely coupled, solution which can be easily adapted by other frameworks - this is quite an important feature as you will see later in the article.
+	</p>
+
+	<h2>Right, and a plugin manager manages those?</h2>
+
+	<p>
+		Yup.
+
+		Basically a way to manage a collection of plugins, and allowing various events to be subscribed to, and triggered on the plugin functions.
+	</p>
+
+	<h2>So how do you use it?</h2>
+
+	<p>
+		First you create a new plugin manager object, then add a plugin with an event trigger inside it.
+	</p>
+
+<!--
+<pre class="codepen" data-height="300" data-type="result" data-href="nDqcw" data-user="jsguy"><code></code></pre>
+<script async src="http://codepen.io/assets/embed/ei.js"></script>
+-->
+
+	<script>
+		//	Create a plugin manager
+		var pm = new ulib.PluginManager();
+
+		//	My plugin
+		pm.add('myPlugin', function() {
+			this.on('myEvent',function(data) {
+				console.log('myEvent', data);
+			});
+		});
+
+		pm.trigger('myEvent', {my: 'data'});
+	</script>
+
+
+
+
+
+
+
+
+		<style type="text/css">
+
+			.slideShowSurround				{ position: relative; display: block; }
+			.mainImageSurround				{ width: 800px; height: 533px; }
+			.mainImage						{ width: 100%; height: 100%; display: inline }
+			.slideButton					{ width: 400px; height: 533px; opacity: 0; position: absolute; top: 0; }
+			.prevButton						{ left: 0 }
+			.nextButton					{ left: 400px }
+
+			.slideImage						{ width: 80px; height: 53px; float: left; border: 3px solid transparent; }
+			.slideImage img					{ clip: rect(0px,80px,53px,0px); width: 80px; height: 53px }
+			.slideImage.selectedImg 		{ border: 3px solid red; }
+
+
+			/* Pretend we have ads */
+			#adHolder 						{ position: fixed; top: 10px; right: 10px; height: 120px; width: 120px; border: 4px solid #00f; }
+
+		</style>
+
+	<!-- Where we want the slideshow -->
+	<div id="mySlideshow"></div>
+
+	<!-- Place we want an ad to appear -->
+	<div id='adHolder'></div>
+
+	<div>
+
+		<p>
+			So the above is all well and good - it does what we want, and is implemented nicely as a jQuery plugin (we could be using any library, but jQuery is easy and popular).
+
+			Awesome, right? ... Well, yes ... that is until you want to extend the functionality - we could either take a copy of the whole jQuery plugin (code branching), or look at changing the setImage function: this is doing a whole bunch of things - if we want to customise things, we'd probably need to override this function, which means that the code could potentially become fragile, and probably break with future updates of the underlying widget. It would be nice if we could de-couple some of this functionality a little.
+
+			The obvious choice to de-couple the functionality would be to use the <a href="http://en.wikipedia.org/wiki/Publish%E2%80%93subscribe_pattern">pub-sub</a> pattern.
+
+			Today however, I'm going to my shiny new library: ulib! (Well, it's just over 2 years old, but I only recently made it shiny!) ulib stands for "micro" library - it's a small set of utilities that I have found useful over the years when I didn't want to use something "heavier".
+
+			Ulib's plugin and event management methods (essentially an extensive pub-sub library) has several features that makes it very simple to implement a comprehensive and highly effective plugin stack with very little effort:
+
+			<ul>
+				<li>Customizable event types - standard, cancelable, deferred, run-once, non-consecutive, run-only-after</li>
+				<li>An ordered plugin stack with ability to cancel stack triggers</li>
+				<li>Expose event types as methods on plugins (avoids issues with incorrectly trying to subscribe to a non-existing event)</li>
+			</ul>
+
+			<script>
+				//	Create the plugin manager with a registered event
+				var pm = new ulib.PluginManager({
+					events: [{ type: 'myevent' }]
+				});
+
+				//  The plugin, which subscribes to our event
+				pm.add("myPlugin", function(pluginConfig) {
+					this.onMyevent(function(data){
+						//console.log('my event was triggered!', data);
+					});
+				});
+
+				//	Trigger the event, passing in an object
+				pm.trigger('myevent', { key: 'value'} );
+			</script>
+
+In the above example we can now subscribe to myevent by simply adding a plugin, and calling this.onMyevent - any arguments passed to the trigger will be passed through to the handler method.
+
+Let us re-write the slideshow using ulib's plugin infrastructure:
+
+
+
+[ulib slideshow]
+
+
+	<script>
+		//	"Imaginary" advertsing integration
+		var poorlySupportedWeirdAdSystemKitThing = {
+			adCount: 0,
+			//	Creates an "ad"
+			getAd: function(index) {
+				//	Pretend we load an ad from the adserver and place in adholder
+				//	Note: could pass image info to ad server based on index
+				var ad = {
+					link: "#",
+					text: "Buy something!"
+				};
+
+				poorlySupportedWeirdAdSystemKitThing.adCount += 1;
+
+				$('#adHolder').html("<a href='" + ad.link + "'>" + ad.text + " (" + poorlySupportedWeirdAdSystemKitThing.adCount + ")</a>");
+			}
+		};
+	</script>
+
+	<script>
+		//	Again (arbitrarily) implemented as a jQuery plugin
+		$.fn.slideShow = function(args) {
+			//	Test slide show
+			var i, that = this,
+				currentImg = 0,
+				imageList = [],
+				//	Template for slideshow
+				template = ["<div class=\"slideShowSurround\">",
+				"	<div class=\"mainImageSurround\">",
+				"		<button class=\"slideButton prevButton\"></button>",
+				"		<button class=\"slideButton nextButton\"></button>",
+				"		<img class=\"mainImage\" src=\"\"/>",
+				"	</div>",
+				"	<div class=\"imageList\">",
+				"		<% for ( var i = 0; i < images.length; i += 1 ) { %>",
+				"		<div class=\"slideImage\"><img src=\"<%=images[i]%>\"/></div>",
+				"		<% } %>",
+				"	</div>",
+				"</div>"].join(""),
+				//	Updates indicator on thumb for selected image
+				updateSelectedImage = function(){
+					$('.imageList', that).find('.slideImage').each(function(idx, ele) {
+						if(idx === currentImg) {
+							$(ele).addClass('selectedImg');
+						} else {
+							$(ele).removeClass('selectedImg');
+						}
+					});
+				},
+				//	Sets the selected image
+				updateImage = function() {
+					$('.mainImage', that).attr({
+						src: imageList[currentImg]
+					});
+				},
+				//	Create a plugin manager
+				pm = new ulib.PluginManager({
+					events: [
+						{ type: 'updateImage' },
+						{ type: 'imageListLoaded' }
+					]
+				}),
+
+				//	Assigns DOM event listeners
+				init = function() {
+					//	Prev image
+					$('.prevButton', that).click(function() {
+						currentImg -= 1;
+						if(currentImg < 0) {
+							currentImg = imageList.length - 1;
+						}
+						pm.trigger('updateImage', currentImg);
+					})
+
+					//	Next image
+					$('.nextButton', that).click(function() {
+						currentImg += 1;
+						if(currentImg > imageList.length - 1) {
+							currentImg = 0;
+						}
+						pm.trigger('updateImage', currentImg);
+					});
+
+					//	Jump to image
+					$('.slideImage', that).click(function() {
+						var clickedEl = this;
+						$('.slideImage', that).each(function(idx, el){
+							if(clickedEl === el) {
+								currentImg = idx;
+								return false;
+							}
+						});
+						pm.trigger('updateImage', currentImg);
+					});
+				};
+
+			//	Image loader plugin
+			pm.add('imageLoader', function() {
+				this.onImageListLoaded(function(data) {
+					//	Set our image list and add images into the target using the template
+					imageList = data;
+					$(that).html(tmpl(template, {
+						images: imageList
+					}));
+					//	Trigger our update image event
+					pm.trigger('updateImage', currentImg);
+				});
+			});
+
+			//	Image update plugin
+			pm.add('imageUpdate', function() {
+				this.onUpdateImage(function(index) {
+					currentImg = index;
+					updateImage();
+					updateSelectedImage();
+				});
+			});
+
+			//	Advertising plugin
+			pm.add('advertising', function() {
+				//this.on('updateImage', function(index) {
+				this.onUpdateImage(function(index) {
+					poorlySupportedWeirdAdSystemKitThing.getAd();
+				});
+			});
+
+			//	Add/override any additional plugins
+			if(args && args.plugins) {
+				for(i in args.plugins) { if(args.plugins.hasOwnProperty(i)) {
+					pm.add(i, args.plugins[i]);
+				}}
+			}
+
+			//	Load a list of images using ajax, and trigger the "imageListLoaded" event
+			$.ajax({
+				url: 'imagelist.php',
+				dataType: 'jsonp',
+				success: function(data) {
+					pm.trigger('imageListLoaded', data);
+					init();
+				}
+			});
+		};
+
+
+		$('#mySlideshow').slideShow({
+			plugins: {
+				//	Override the advertising plugin
+				advertising: function() {
+					this.onUpdateImage(function() {
+						console.log('NEW advertising plugin ', arguments, this);
+						poorlySupportedWeirdAdSystemKitThing.getAd();
+					});
+				}
+			}
+		});
+
+	</script>
+
+
+
+
+As you can see, we no longer need the "showImage" function, we are completely decoupled, so now you can do stuff like easily adding in another ad call for each image:
+
+[code to subscribe to show image and make oblong ad]
+
+The author still has complete control over what the user can easily override - you will note that we made the nextImage event cancelable - this enables us to hijack it, so we could do something like:
+
+[Example of overlay ad]
+
+This will overlay an ad every 4th time the slideshow is advanced. It would be very difficult to do this in the old version, without re-writing the showImage function - here it is straight forward, as it is decoupled.
+
+To learn more about ulib's plugin infrastructure see the API docs.
+
+		</p>
+
+		<p>
+		</p>
+
+	</div>
+
+	<script>
+
+		/*
+			When should you use ulib.plugins?
+
+				. If you need your project to be easily extendable by 3rd parties
+				. Working on a large project, it makes it very easy to split tasks for various developers
+				. Makes separation of concerns a simpler task
+
+		*/
+	</script>
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>
