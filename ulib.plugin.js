@@ -235,7 +235,19 @@ ulib = ulib || {};
 			},
 
 			setupPlugin = function (plugin, config) {
+				var ci, pc = pluginConfig["*"];
 				config = (config !== undefined)? config: pluginConfig[plugin.name];
+
+				//	Add properties from generic config if available
+				if(pc) {
+					config = config || {};
+					for(c in pc) {if(pc.hasOwnProperty(c)) {
+						if(!config.hasOwnProperty(c)) {
+							config[c] = pc[c];
+						}
+					}}
+				}
+
 				//  Use apply to expose core
 				plugin.obj.apply(core({
 						name: plugin.name
@@ -245,7 +257,7 @@ ulib = ulib || {};
 				);
 			};
 
-		//	Expose the event, add and trigger methods
+		//	Expose the registerEvent, add and trigger methods
 		this.registerEvent = registerEvent;
 		this.add = addPlugin;
 		this.trigger = expose(pubsub.trigger, pubsub);
