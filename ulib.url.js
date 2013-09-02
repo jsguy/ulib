@@ -62,7 +62,15 @@ window.ulib = window.ulib || {};
 			reg = new RegExp("[?&]+([^=&]+)=([^&]*)", "gi");
 
 			parts = url.replace(reg, function (m, key, value) {
-				vars.params[key] = value; //decodeURIComponent(value);
+				//	TODO: This can potentially be a list!
+				if(typeof vars.params[key] !== 'undefined') {
+					if( Object.prototype.toString.call(vars.params[key]) !== '[object Array]' ) {
+						vars.params[key] = [vars.params[key]];
+					}
+					vars.params[key].push(value);
+				} else {
+					vars.params[key] = value; //decodeURIComponent(value);
+				}
 			});
 			return vars;
 		},
