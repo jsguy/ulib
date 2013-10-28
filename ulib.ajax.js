@@ -42,7 +42,8 @@ window.ulib = window.ulib || {};
 (function (ulib) {
 	
 	var ajax = function(args) {//url, callBack) {
-		var url = args.url, callBack = args.callBack, type = args.type || 'ajax';
+		var url = args.url, callBack = args.callBack, type = args.type || 'ajax',
+			async = (typeof args.async !== 'undefined')? args.async: true;
 		
 		var ajaxRequest = function(url, callBack) {
 		
@@ -70,12 +71,12 @@ window.ulib = window.ulib || {};
 				req.onreadystatechange = bind(stateChange, this);
 		
 				if (postBody!=="") {
-					req.open("POST", url, true);
+					req.open("POST", url, async);
 					req.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
 					req.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
 					req.setRequestHeader('Connection', 'close');
 				} else {
-					req.open("GET", url, true);
+					req.open("GET", url, async);
 				}
 		
 				req.send(postBody);
