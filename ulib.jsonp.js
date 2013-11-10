@@ -1,4 +1,4 @@
-/*global window, $, jQuery */
+/*global window*/
 /*jslint white: true, onevar: true, undef: true, nomen: true, eqeqeq: true, plusplus: true, bitwise: true, regexp: true, newcap: true, immed: true */
 /*
 	ulib - jsguy's standalone micro utilities library
@@ -27,11 +27,11 @@
 
 /*
 	ulib.jsonp - jsonp functionality
-	part of the u collection - simple utilities
+	part of the ulib collection - simple utilities
 
 	Usage:
 
-		u.jsonp(url, callback, options)
+		ulib.jsonp(url, callback, options)
 	
 	url - the URL to use
 	callback - a function to run when the call is completed, it will be data typically as an object
@@ -44,8 +44,8 @@
 		error - function to call when an error occurs
 
 */
-window.ulib = window.ulib || {};
-(function (u) {
+var ulib = this.ulib || {};
+(function(){
 	var jsonp = function (options) {
 		var reg, scriptID = ((options && options.scriptprefix) ? options.scriptprefix : "_jsonp") + (new Date()).getTime() + (Math.round(Math.random()*100000000, 0)),
 			url = options.url, cb = options.cb,
@@ -142,5 +142,5 @@ window.ulib = window.ulib || {};
 		}
 	};
 	//	Expose the jsonp function
-	u.jsonp = jsonp;
-}(window.ulib));
+	ulib.jsonp = jsonp;
+}).call(this);

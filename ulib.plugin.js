@@ -1,4 +1,4 @@
-/*global window, events*/
+/*global window*/
 /*jslint white: true, onevar: true, undef: true, nomen: true, eqeqeq: true, plusplus: true, bitwise: true, regexp: true, newcap: true, immed: true */
 /*
 	ulib - jsguy's standalone micro utilities library
@@ -24,9 +24,14 @@
 	THE SOFTWARE.
 
 */
-ulib = ulib || {};
-(function (ulib) {
 
+/*
+	ulib.plugin - plugin functionality
+	part of the ulib collection - simple utilities
+
+*/
+var ulib = this.ulib || {};
+(function(){
 	/*
 	 * ulib.plugin - args are:
 	 *
@@ -283,4 +288,4 @@ ulib = ulib || {};
 	//  Expose external functions
 	ulib.plugin = new PluginManager();
 	ulib.PluginManager = PluginManager;
-}(ulib));
+}).call(this);

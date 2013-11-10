@@ -36,8 +36,8 @@
 	func - the function to use
 
 */
-window.ulib = window.ulib || {};
-(function (u) {
+var ulib = this.ulib || {};
+(function(){
 	var isReady = false,
 		readyFuncs = [],
 		DOMContentLoaded,
@@ -125,8 +125,6 @@ window.ulib = window.ulib || {};
 			}
 		},
 		addReadyFunc = function (func) {
-			//	This is really simplistic - ideally we would include a proper event stack...
-			//	Note: passing u.ready(func) does not guarantee it will run
 			if (!isReady) {
 				readyFuncs.push(func);
 			} else {
@@ -155,5 +153,5 @@ window.ulib = window.ulib || {};
 	domReady();
 
 	//	Expose function
-	u.ready = addReadyFunc;
-}(window.ulib));
+	ulib.ready = addReadyFunc;
+}).call(this);

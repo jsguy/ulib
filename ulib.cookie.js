@@ -39,8 +39,8 @@
 		days - how many days the cookie is valid for
 
 */
-ulib = ulib || {};
-(function (ulib) {
+var ulib = this.ulib || {};
+(function(){
 	var cookie = {
 		//	Get a cookie
 		get: function (key) {
@@ -100,4 +100,4 @@ ulib = ulib || {};
 
 	//	Expose the cookie function
 	ulib.cookie = cookie;
-}(ulib));
+}).call(this);

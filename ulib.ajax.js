@@ -38,9 +38,8 @@
 	options - optional arguments:
 
 */
-window.ulib = window.ulib || {};
-(function (ulib) {
-	
+var ulib = this.ulib || {};
+(function(){
 	var ajax = function(args) {//url, callBack) {
 		var url = args.url, callBack = args.callBack, type = args.type || 'ajax',
 			async = (typeof args.async !== 'undefined')? args.async: true;
@@ -129,4 +128,4 @@ window.ulib = window.ulib || {};
 	
 	//	Expose the ajax function
 	ulib.ajax = ajax;
-}(window.ulib));
+}).call(this);

@@ -4,8 +4,8 @@
 		<link rel="stylesheet" href="lib/qunit/qunit.css" type="text/css" media="screen" />
 		<script src="lib/qunit/qunit.js"></script>
 		
-		<script src="../ulib.events.js"></script>
-		<script src="../../tagsole/tagsole.js"></script>
+		<script src="../ulib.pubsub.js"></script>
+		<script src="../../sole/dist/sole-latest.js"></script>
 	</head>
 <body>
 	
@@ -14,33 +14,32 @@
 	<h2 id="qunit-userAgent"></h2>
 	<ol id="qunit-tests"></ol>
 	
-	<script src="../ulib.events.js"></script>
 	
     <script>
     	//	The code
-		var em = new ulib.EventsManager();
+		var em = new ulib.Pubsub();
 
-		tagsole.log('Num events ' + em.getEventTypes().length);
+		sole.log('Num events ' + em.getEventTypes().length);
 		em.addEventType({ type: 'loaded' });
-		tagsole.log('Num events ' + em.getEventTypes().length);
-		tagsole.log('Has loaded event ' + em.hasEvent('loaded'));
+		sole.log('Num events ' + em.getEventTypes().length);
+		sole.log('Has loaded event ' + em.hasEvent('loaded'));
 		em.on('loaded', function(o) {
-			tagsole.log('loaded ran ' + o);
+			sole.log('loaded ran ' + o);
 		});
 		em.trigger('loaded', 1);
 		
 		em.removeEventType('loaded');
-		tagsole.log('Num events ' + em.getEventTypes().length);
-		tagsole.log('Has loaded event ' + em.hasEvent('loaded'));
+		sole.log('Num events ' + em.getEventTypes().length);
+		sole.log('Has loaded event ' + em.hasEvent('loaded'));
     </script>
     
     <script>
     	// The tests
     	
     	//	Get all events logged and the length
-    	var ev = tagsole.get(),
-    		len = tagsole.get().length;
-    	
+    	var ev = sole.get(),
+    		len = sole.get().length;
+
 		test( "Add event type", function() {
 			expect(2);
 			ok( ev[0].args[0] === "Num events 0" && ev[1].args[0] === "Num events 1", "Ensure that we can add event types" );

@@ -30,9 +30,8 @@
 	part of the ulib collection - simple utilities
 
 */
-window.ulib = window.ulib || {};
-(function (ulib) {
-
+var ulib = this.ulib || {};
+(function(){
 	var Utils = function () {
 		var that = this;
 
@@ -200,5 +199,4 @@ window.ulib = window.ulib || {};
 
 	//	Expose global event object
 	ulib.utils = new Utils();
-
-}(window.ulib));
+}).call(this);

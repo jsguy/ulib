@@ -38,9 +38,8 @@
 	Returns: object with params and hash
 
 */
-window.ulib = window.ulib || {};
-(function (u) {
-
+var ulib = this.ulib || {};
+(function(){
 	var urlParts = function (url) {
 			var vars = {
 				hash: "",
@@ -88,6 +87,6 @@ window.ulib = window.ulib || {};
 		};
 
 	//	Expose url functions
-	u.url = urlParts;
-	u.urlString = urlString;
-}(window.ulib));
+	ulib.url = urlParts;
+	ulib.urlString = urlString;
+}).call(this);

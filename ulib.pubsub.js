@@ -34,8 +34,9 @@
 	1. Both loose and concrete event types
 	2. Ability to filter events by type
 */
-ulib = ulib || {};
-(function (ulib) {
+
+var ulib = this.ulib || {};
+(function(){
 	var Pubsub = function (args) {
 
 		var //	List of supported events
@@ -329,4 +330,4 @@ ulib = ulib || {};
 	//	Expose global event object
 	ulib.pubsub = new Pubsub();
 	ulib.Pubsub = Pubsub;
-}(ulib));
+}).call(this);

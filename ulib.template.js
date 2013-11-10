@@ -36,34 +36,35 @@
 	str - the template
 	data - any data that the template uses
 
+	returns HTML string
+
 */
-ulib = ulib || {};
-(function (ulib, undefined) {
-	var cache = {};
+var ulib = this.ulib || {};
+(function(){
+	var cache = {},
 	
 	//	Template functionality
-	u.template = function template(str, data) {
+	template = function template(str, data) {
  
 		//	Use the cache, or create a new function
 		var fn = cache[str] ||
-		 
-		//	Create a cachable template function
-		new Function("obj",
-			"var p=[],print=function(){p.push.apply(p,arguments);};" +
-		   
-		    // Introduce the data as local variables using with(){}
-			"with(obj){p.push('" +
+			//	Create a cachable template function
+			new Function("obj",
+				"var p=[],print=function(){p.push.apply(p,arguments);};" +
 			   
-			// Convert the template into JS
-			str
-				.replace(/[\r\t\n]/g, " ")
-				.split("<%").join("\t")
-				.replace(/((^|%>)[^\t]*)'/g, "$1\r")
-				.replace(/\t=(.*?)%>/g, "',$1,'")
-				.split("\t").join("');")
-				.split("%>").join("p.push('")
-				.split("\r").join("\\'")
-				+ "');}return p.join('');");
+			    //	Introduce the data as "local" variables using with
+				"with(obj){p.push('" +
+				   
+				//	Convert the template into JS
+				str
+					.replace(/[\r\t\n]/g, " ")
+					.split("<%").join("\t")
+					.replace(/((^|%>)[^\t]*)'/g, "$1\r")
+					.replace(/\t=(.*?)%>/g, "',$1,'")
+					.split("\t").join("');")
+					.split("%>").join("p.push('")
+					.split("\r").join("\\'")
+					+ "');}return p.join('');");
 			
 		//	Cache the function
 		cache[str] = fn;
@@ -71,4 +72,6 @@ ulib = ulib || {};
 		// Provide some basic currying to the user
 		return data ? fn( data ) : fn;
 	};
-}(ulib));
+
+	ulib.template = template;
+}).call(this);
