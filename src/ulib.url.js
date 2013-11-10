@@ -79,7 +79,7 @@ var ulib = this.ulib || {};
 			var	str = "", count = 0, p;
 			
 			for( p in param ) { if( param.hasOwnProperty( p ) ) {
-				str += ( ( count == 0 )? '': '&' ) + p + '=' + encodeURIComponent( param[p] );	//.replace( /%20/g, '+' );
+				str += ( ( count === 0 )? '': '&' ) + p + '=' + encodeURIComponent( param[p] );	//.replace( /%20/g, '+' );
 				count += 1;
 			} }
 

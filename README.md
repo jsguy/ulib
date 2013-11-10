@@ -5,4 +5,4 @@ _micro library for making other libraries_
 
 Copyright 2013 jsguy (Mikkel Bergmann)
 
-Licensed under the LGPL License
+Licensed under the MIT License

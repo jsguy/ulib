@@ -73,7 +73,7 @@ var ulib = this.ulib || {};
 						if(pluginErrors.hasOwnProperty(name)) {
 							console.error('ulib ' + name + ' - ' + pluginErrors[name] + ((info)? info: ''));
 						} else {
-							console.error('ulib ' + name + ' - ' + pluginErrors['TriggerError'] + ((info)? info: ''));
+							console.error('ulib ' + name + ' - ' + pluginErrors.TriggerError + ((info)? info: ''));
 						}
 					}
 				}
@@ -240,15 +240,15 @@ var ulib = this.ulib || {};
 			},
 
 			setupPlugin = function (plugin, config) {
-				var ci, pc = pluginConfig["*"];
+				var i, pc = pluginConfig["*"];
 				config = (config !== undefined)? config: pluginConfig[plugin.name];
 
 				//	Add properties from generic config if available
 				if(pc) {
 					config = config || {};
-					for(c in pc) {if(pc.hasOwnProperty(c)) {
-						if(!config.hasOwnProperty(c)) {
-							config[c] = pc[c];
+					for(i in pc) {if(pc.hasOwnProperty(i)) {
+						if(!config.hasOwnProperty(i)) {
+							config[i] = pc[i];
 						}
 					}}
 				}

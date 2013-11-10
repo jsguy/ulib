@@ -85,7 +85,9 @@ var ulib = this.ulib || {};
 				cookie.push('httponly');
 			}
 
-			return (window.document.cookie = cookie.join('; '));
+			window.document.cookie = cookie.join('; ');
+
+			return window.document.cookie;
 		},
 
 		//	Removes a cookie by expiring it.
