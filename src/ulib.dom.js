@@ -40,7 +40,8 @@ var ulib = this.ulib || {};
 		},
 
 		forEach = function(obj, callback) {
-			for (var key in obj){if(obj.hasOwnProperty(key)) {
+			// http://stackoverflow.com/questions/8157700/object-has-no-hasownproperty-method-i-e-its-undefined-ie8
+			for (var key in obj){if(Object.prototype.hasOwnProperty.call(obj,key)) {
 				callback(key, obj[key]);
 			}}
 		}, 
