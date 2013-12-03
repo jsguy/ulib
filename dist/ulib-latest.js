@@ -276,7 +276,8 @@ var ulib = this.ulib || {};
 		},
 
 		forEach = function(obj, callback) {
-			for (var key in obj){if(obj.hasOwnProperty(key)) {
+			// http://stackoverflow.com/questions/8157700/object-has-no-hasownproperty-method-i-e-its-undefined-ie8
+			for (var key in obj){if(Object.prototype.hasOwnProperty.call(obj,key)) {
 				callback(key, obj[key]);
 			}}
 		}, 
@@ -469,7 +470,7 @@ var ulib = this.ulib || {};
 	2. Ability to filter events by type
 */
 
-var ulib = this.ulib || {};
+this.ulib = this.ulib || {};
 (function(){
 	var Pubsub = function (args) {
 
@@ -1578,4 +1579,4 @@ var ulib = this.ulib || {};
 
 	//	Expose global event object
 	ulib.utils = new Utils();
-}).call(this);;}).call(ulib);
+}).call(this);;}).call(this);

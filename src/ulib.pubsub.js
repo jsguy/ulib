@@ -35,7 +35,7 @@
 	2. Ability to filter events by type
 */
 
-var ulib = this.ulib || {};
+this.ulib = this.ulib || {};
 (function(){
 	var Pubsub = function (args) {
 
