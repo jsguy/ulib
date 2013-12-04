@@ -37,7 +37,8 @@
 
 this.ulib = this.ulib || {};
 (function(){
-	var Pubsub = function (args) {
+	var ulib = this.ulib,
+		Pubsub = function (args) {
 
 		var //	List of supported events
 			events = [],

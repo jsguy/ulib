@@ -472,7 +472,8 @@ var ulib = this.ulib || {};
 
 this.ulib = this.ulib || {};
 (function(){
-	var Pubsub = function (args) {
+	var ulib = this.ulib,
+		Pubsub = function (args) {
 
 		var //	List of supported events
 			events = [],
@@ -806,7 +807,8 @@ var ulib = this.ulib || {};
 	 * 	pluginConfig - configurations that can be passed to named plugins
 	 *
 	 */
-	var PluginManager = function (args) {
+	var ulib = this.ulib,
+		PluginManager = function (args) {
 		args = args || {};
 		//  "Global" config object - exposed to all plugins via get and set functions in the core
 		var i, config = {},
@@ -1327,7 +1329,7 @@ var ulib = this.ulib || {};
 	Returns: object with params and hash
 
 */
-var ulib = this.ulib || {};
+this.ulib = this.ulib || {};
 (function(){
 	var urlParts = function (url) {
 			var vars = {

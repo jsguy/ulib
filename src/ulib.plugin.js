@@ -39,7 +39,8 @@ var ulib = this.ulib || {};
 	 * 	pluginConfig - configurations that can be passed to named plugins
 	 *
 	 */
-	var PluginManager = function (args) {
+	var ulib = this.ulib,
+		PluginManager = function (args) {
 		args = args || {};
 		//  "Global" config object - exposed to all plugins via get and set functions in the core
 		var i, config = {},

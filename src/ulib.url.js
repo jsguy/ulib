@@ -38,7 +38,7 @@
 	Returns: object with params and hash
 
 */
-var ulib = this.ulib || {};
+this.ulib = this.ulib || {};
 (function(){
 	var urlParts = function (url) {
 			var vars = {
