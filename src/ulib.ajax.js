@@ -31,7 +31,7 @@
 
 	Usage:
 
-		u.ajax(url, callback, options)
+		u.ajax({url: url, success: function(){}})
 	
 	url - the URL to use
 	callback - a function to run when the call is completed, it will be data typically as an object
@@ -40,91 +40,53 @@
 */
 var ulib = this.ulib || {};
 (function(){
-	var ajax = function(args) {//url, callBack) {
-		var url = args.url, callBack = args.callBack, type = args.type || 'ajax',
-			async = (typeof args.async !== 'undefined')? args.async: true;
-		
-		var ajaxRequest = function(url, callBack) {
-		
-			var bind = function (caller, object) {
-				return function() {
-					return caller.apply(object, [object]);
-				};
-			}, stateChange = function (object) {
-				if (request.readyState==4) {
-					callBack(request.responseText);
-				}
-			}, getRequest = function() {
-				if (window.ActiveXObject) {
-					return new ActiveXObject('Microsoft.XMLHTTP');
-				} else if (window.XMLHttpRequest) {
-					return new XMLHttpRequest();
-				}
-				return false;
-			}, postBody = (arguments[2] || "");
-		
-			request = getRequest();
+	var def = function(obj1, obj2){
+		for(var i in obj2) {if(obj2.hasOwnProperty(i)){
+			obj1[i] = obj2[i];
+		}}
+		return obj1;
+	},
+	ajax = function(args) {
+		args = def({
+			requestType: 'ajax',
+			async: true,
+			type: 'POST',
+			processResponse: true
+		}, args);
+
+		args.type = args.type.toUpperCase();
 			
-			if(request) {
-				var req = request;
-				req.onreadystatechange = bind(stateChange, this);
-		
-				if (postBody!=="") {
-					req.open("POST", url, async);
-					req.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-					req.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-					req.setRequestHeader('Connection', 'close');
-				} else {
-					req.open("GET", url, async);
-				}
-		
-				req.send(postBody);
-			}
-		}, 
-		scriptRequest = function(url, callBack){
-			var head = document.getElementsByTagName("head")[0] || document.documentElement,
-				script = document.createElement("script");
+		var req = new XMLHttpRequest(),
+			//	Add parameters to URL if we have data and it is GET
+			url = (args.type === 'GET')?
+				args.url + (args.data? Object.keys(args.data).map(function(k) {
+				    return encodeURIComponent(k) + '=' + encodeURIComponent(args.data[k])
+				}).join('&'): ""):
+				args.url;
 				
-			script.src = url;
-			/*
-			if ( s.scriptCharset ) {
-				script.charset = s.scriptCharset;
-			}
-			*/
-
-			// Handle Script loading
-			var done = false;
-
-			// Attach handlers for all browsers
-			script.onload = script.onreadystatechange = function() {
-				if ( !done && (!this.readyState || this.readyState === "loaded" || this.readyState === "complete") ) {
-					done = true;
-					callBack();
-
-					// Handle memory leak in IE
-					script.onload = script.onreadystatechange = null;
-					if ( head && script.parentNode ) {
-						head.removeChild( script );
-					}
+		req.onreadystatechange = function (object) {
+			if (req.readyState==4) {
+		        if (req.status === 200) {
+					args.success(args.processResponse? JSON.parse(req.responseText): req.responseText, req);
+				} else {
+					args.error(req);
 				}
-			};
-
-			// Use insertBefore instead of appendChild  to circumvent an IE6 bug.
-			// This arises when a base node is used (#2709 and #4378).
-			head.insertBefore( script, head.firstChild );
-
-			// We handle everything using the script element injection
-			return undefined;			
+			}
 		};
-		
-		if(type === 'ajax') {
-			return ajaxRequest(url, callBack);
-		} else if(type==='script') {
-			return scriptRequest(url, callBack);
+		req.open(args.type, url, args.async);
+		req.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+		if(args.contentType) {
+			req.setRequestHeader('Content-type', args.contentType);
+		} else if(args.contentType !== false) {
+			req.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
 		}
-		
+
+		if(args.type !== "GET") {
+			req.send(args.data);
+		}
+
+		return req;
 	};
-	
 	
 	//	Expose the ajax function
 	ulib.ajax = ajax;
