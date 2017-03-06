@@ -34,10 +34,11 @@
 
 		ulib.loadAndCallback(['script1.js', 'style1.css'], function(){
 			//	The script is loaded, and CSS has been attaced to the DOM for loading async.
-		});
+		}, arg1, arg2, argX);
 
 	url(s) - either a single URL or a list of urls of files that end in .js or .css
 	callback - a function to run when the loading is completed (in the case of CSS files, started)
+	arg1...X - any extra arguments will be passed to callback
 */
 var ulib = this.ulib || {};
 (function(){
