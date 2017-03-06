@@ -67,9 +67,7 @@ var ulib = this.ulib || {};
         // We handle everything using the script element injection
         return undefined;			
     };
-
-    return scriptRequest(url, callBack);
 	
-	//	Expose the function
-	ulib.loadScript = scriptRequest;
+    //	Expose the function
+    ulib.loadScript = scriptRequest;
 }).call(this);
