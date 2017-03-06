@@ -4,17 +4,17 @@
 	ulib - jsguy's standalone micro utilities library
 
 	Copyright (C) 2011 by Mikkel Bergmann
-	
+
 	Permission is hereby granted, free of charge, to any person obtaining a copy
 	of this software and associated documentation files (the "Software"), to deal
 	in the Software without restriction, including without limitation the rights
 	to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 	copies of the Software, and to permit persons to whom the Software is
 	furnished to do so, subject to the following conditions:
-	
+
 	The above copyright notice and this permission notice shall be included in
 	all copies or substantial portions of the Software.
-	
+
 	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 	IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 	FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -32,7 +32,7 @@
 	Usage:
 
 		u.ajax({url: url, success: function(){}})
-	
+
 	url - the URL to use
 	callback - a function to run when the call is completed, it will be data typically as an object
 	options - optional arguments:
@@ -55,15 +55,15 @@ var ulib = this.ulib || {};
 		}, args);
 
 		args.type = args.type.toUpperCase();
-			
+
 		var req = new XMLHttpRequest(),
 			//	Add parameters to URL if we have data and it is GET
 			url = (args.type === 'GET')?
 				args.url + (args.data? Object.keys(args.data).map(function(k) {
-				    return encodeURIComponent(k) + '=' + encodeURIComponent(args.data[k])
+				    return encodeURIComponent(k) + '=' + encodeURIComponent(args.data[k]);
 				}).join('&'): ""):
 				args.url;
-				
+
 		req.onreadystatechange = function (object) {
 			if (req.readyState==4) {
 		        if (req.status === 200) {
@@ -87,7 +87,7 @@ var ulib = this.ulib || {};
 
 		return req;
 	};
-	
+
 	//	Expose the ajax function
 	ulib.ajax = ajax;
 }).call(this);

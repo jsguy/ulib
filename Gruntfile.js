@@ -4,6 +4,8 @@ module.exports = function(grunt) {
 	var concatFiles = [
 		'src/template/_head.js',
 		'src/ulib.ajax.js',
+		'src/ulib.loadscript.js',
+		'src/ulib.loadandcallback.js',
 		'src/ulib.cookie.js',
 		'src/ulib.dom.js',
 		'src/ulib.jsonp.js',
